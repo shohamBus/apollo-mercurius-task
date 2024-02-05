@@ -1,61 +1,60 @@
-// subgraphCalendar/calendar.ts
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { AuthenticationError } from 'apollo-server-express';
+import { isValidToken } from '../utils/utils'; // Import isValidToken from utils
 
-interface Event {
+interface Person {
   id: string;
-  summary: string;
-  start: string;
-  end: string;
+  name: string;
+  email: string;
 }
 
 const typeDefs = gql`
-  type Event {
+  type Person {
     id: ID!
-    summary: String!
-    start: String!
-    end: String!
+    name: String!
+    email: String!
   }
 
   type Query {
-    events: [Event!]!
+    people: [Person!]!
   }
 `;
 
 const resolvers = {
   Query: {
-    events: async () => {
-      try {
-        // Fetch data from Google Calendar API here
-        const calendarData: Event[] = await fetchCalendarData();
-        console.log('Calendar data:', calendarData); // Log the fetched data
-        return calendarData;
-      } catch (error:any) {
-        console.error('Error fetching calendar data:', error.message);
-        throw error; // Rethrow the error to handle it in the resolver
+    people: async (_parent: any, _args: any, context: { token: string }) => {
+      // Validate the token in context.token
+      if (isValidToken(context.token)) {
+        // Proceed with fetching people data
+        const peopleData: Person[] = await fetchPeopleData();
+        return peopleData;
+      } else {
+        // Handle authentication error
+        throw new AuthenticationError('Invalid token');
       }
     },
   },
 };
 
-export const calendarSchema = makeExecutableSchema({
+export const peopleSchema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
 
 // Fetch data function, replace with actual logic
-async function fetchCalendarData(): Promise<Event[]> {
+async function fetchPeopleData(): Promise<Person[]> {
   try {
-    // Implement your logic to fetch data from Google Calendar API
+    // Implement your logic to fetch data from Google People API
     // ...
-    const calendarData: Event[] = []; // Replace with actual data
+    const peopleData: Person[] = []; // Replace with actual data
 
-    console.log('Fetched data from Google Calendar API:', calendarData);
+    console.log('Fetched data from Google People API:', peopleData);
 
-    return calendarData;
-  } catch (error:any) {
-    console.error('Error fetching data from Google Calendar API:', error.message);
+    return peopleData;
+  } catch (error: any) {
+    console.error('Error fetching data from Google People API:', error.message);
     throw error; // Rethrow the error to handle it in the resolver
   }
 }
@@ -64,20 +63,21 @@ async function fetchCalendarData(): Promise<Event[]> {
 const app = express();
 
 // Create an ApolloServer instance
-const server = new ApolloServer({ schema: calendarSchema });
+const server = new ApolloServer({ schema: peopleSchema });
 
 // Start the server and then apply ApolloServer middleware
 async function startServer() {
   await server.start();
-  server.applyMiddleware({ app, path: '/graphql/calendar' });
+  server.applyMiddleware({ app, path: '/graphql/people' });
 
   // Specify the port to listen on
-  const PORT = 3001;
+  const PORT = 4002;
 
   // Start the server
   app.listen(PORT, () => {
-    console.log(`Calendar service is running on http://localhost:${PORT}/graphql/calendar`);
+    console.log(`People service is running on http://localhost:${PORT}/graphql/people`);
   });
 }
 
 // Call the asynchronous function to start the server
+startServer();

@@ -1,7 +1,8 @@
-// subgraphCalendar/calendar.ts
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { AuthenticationError } from 'apollo-server-express';
+import { isValidToken } from '../utils/utils'; // Import isValidToken from utils
 
 interface Event {
   id: string;
@@ -25,18 +26,19 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    events: async () => {
-      try {
-        // Fetch data from Google Calendar API here
+    events: async (parent: any, args: any, context: { token: string }) => {
+      // Validate the token in context.token
+      if (isValidToken(context.token)) {
+        // Proceed with fetching calendar data
         const calendarData: Event[] = await fetchCalendarData();
-        console.log('Calendar data:', calendarData); // Log the fetched data
         return calendarData;
-      } catch (error:any) {
-        console.error('Error fetching calendar data:', error.message);
-        throw error; // Rethrow the error to handle it in the resolver
+      } else {
+        // Handle authentication error
+        throw new AuthenticationError('Invalid token');
       }
     },
   },
+  
 };
 
 export const calendarSchema = makeExecutableSchema({
@@ -54,7 +56,7 @@ async function fetchCalendarData(): Promise<Event[]> {
     console.log('Fetched data from Google Calendar API:', calendarData);
 
     return calendarData;
-  } catch (error:any) {
+  } catch (error: any) {
     console.error('Error fetching data from Google Calendar API:', error.message);
     throw error; // Rethrow the error to handle it in the resolver
   }
@@ -72,7 +74,7 @@ async function startServer() {
   server.applyMiddleware({ app, path: '/graphql/calendar' });
 
   // Specify the port to listen on
-  const PORT = 3001;
+  const PORT = 4001;
 
   // Start the server
   app.listen(PORT, () => {
@@ -81,3 +83,4 @@ async function startServer() {
 }
 
 // Call the asynchronous function to start the server
+startServer();

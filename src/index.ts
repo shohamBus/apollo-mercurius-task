@@ -4,8 +4,8 @@ import { Application, Request, Response, NextFunction } from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloGateway } from '@apollo/gateway';
 import { config } from 'dotenv';
-// import { calendarSchema } from './subgraphCalendar/calendar';
-// import { peopleSchema } from './subgraphPeople/people';
+import { calendarSchema } from './subgraphCalendar/index';
+import { peopleSchema } from './subgraphPeople/index';
 import axios from 'axios';
 import { google } from 'googleapis';
 
@@ -80,38 +80,38 @@ app.get('/oauth2callback', async (req: Request, res: Response) => {
 });
 
 // Wrap the asynchronous part in a function
-// async function startServer() {
-//   // Google Calendar API Subgraph
-//   const calendarService = new ApolloServer({ schema: calendarSchema });
-//   calendarService.applyMiddleware({ app, path: '/graphql/calendar' });
+async function startServer() {
+  // Google Calendar API Subgraph
+  const calendarService = new ApolloServer({ schema: calendarSchema });
+  calendarService.applyMiddleware({ app, path: '/graphql/calendar' });
 
-//   // Google People API Subgraph
-//   const peopleService = new ApolloServer({ schema: peopleSchema });
-//   peopleService.applyMiddleware({ app, path: '/graphql/people' });
+  // Google People API Subgraph
+  const peopleService = new ApolloServer({ schema: peopleSchema });
+  peopleService.applyMiddleware({ app, path: '/graphql/people' });
 
-//   // GraphQL Gateway Configuration
-//   const gateway = new ApolloGateway({
-//     serviceList: [
-//       { name: 'calendar', url: `http://localhost:3001/graphql/calendar` },
-//       { name: 'people', url: `http://localhost:3002/graphql/people` },
-//     ],
-//   });
+  // GraphQL Gateway Configuration
+  const gateway = new ApolloGateway({
+    serviceList: [
+      { name: 'calendar', url: `http://localhost:3001/graphql/calendar` },
+      { name: 'people', url: `http://localhost:3002/graphql/people` },
+    ],
+  });
 
-//   const gatewayServer = new ApolloServer({
-//     gateway,
-//     // @ts-ignore
-//     subscriptions: false,
-//   });
+  const gatewayServer = new ApolloServer({
+    gateway,
+    // @ts-ignore
+    subscriptions: false,
+  });
 
-//   // Wait for the gateway server to start
-//   await gatewayServer.start();
+  // Wait for the gateway server to start
+  await gatewayServer.start();
 
-//   // Apply ApolloServer middleware to the '/graphql' path
-//   gatewayServer.applyMiddleware({ app, path: '/graphql' });
+  // Apply ApolloServer middleware to the '/graphql' path
+  gatewayServer.applyMiddleware({ app, path: '/graphql' });
 
   // Start the server
   const PORT = 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
-// }
+}
