@@ -1,25 +1,5 @@
-// // src/subgraphCalendar/index.ts
+// src/subgraphCalendar/index.ts
 
-// import express from 'express';
-// import { ApolloServer } from 'apollo-server-express';
-// import { calendarSchema } from './calendarSchema';
-
-// const app = express();
-// const port = 3001;
-
-// const server = new ApolloServer({
-//   schema: calendarSchema,
-// });
-
-// export async function startCalendarServer() {
-//   await server.start();
-//   server.applyMiddleware({ app, path: '/graphql/calendar' });
-
-//   app.listen({ port }, () => {
-//     console.log(`Calendar service is running at http://localhost:${port}/graphql/calendar`);
-//   });
-// }
-// calendarSchema.ts
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { gql } from 'apollo-server-express';
 import { AuthenticationError } from 'apollo-server-express';
