@@ -1,22 +1,56 @@
-// src/subgraphPeople/index.ts
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { gql } from 'apollo-server-express';
+import { AuthenticationError } from 'apollo-server-express';
+import { fetchPeopleData } from './fetchPeopleData';
 
-import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import { peopleSchema } from './peopleSchema';
-
-const app = express();
-const port = 3002;
-
-const server = new ApolloServer({
-  schema: peopleSchema,
-});
-
-export async function startPeopleServer() {
-  await server.start();
-  server.applyMiddleware({ app, path: '/graphql/people' });
-
-  app.listen({ port }, () => {
-    console.log(`People service is running at http://localhost:${port}/graphql/people`);
-  });
+interface Name {
+  displayName: string;
+  familyName: string;
 }
 
+interface Person {
+  resourceName?: string;
+  etag?: string;
+  names: Name[];
+}
+
+const typeDefs = gql`
+  type Name {
+    displayName: String!
+    familyName: String!
+  }
+
+  type Person {
+    resourceName: String!
+    etag: String
+    names: [Name!]!
+  }
+
+  type Query {
+    people: [Person!]!
+  }
+`;
+
+const resolvers = {
+  Query: {
+    people: async (_parent: any, _args: any, context: { token: string }) => {
+      if (context.token) {
+        try {
+          const peopleData: Person[] = await fetchPeopleData(context.token);
+          console.log('peopleData', peopleData);
+          return peopleData;
+        } catch (error: any) {
+          console.error('Error fetching data from Google People API:', error.message);
+          throw new Error('Failed to fetch People data');
+        }
+      } else {
+        throw new AuthenticationError('Invalid token');
+      }
+    },
+  },
+};
+
+export const peopleSchema = makeExecutableSchema({
+  typeDefs,
+  resolvers,
+});
