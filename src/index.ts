@@ -1,14 +1,13 @@
 //src/index.ts
 
-import express from 'express';
-import axios from 'axios';
+import express, { Request, Response } from 'express';
 import { config } from 'dotenv';
 import { google } from 'googleapis';
 import { ApolloServer } from 'apollo-server-express';
 import { mergeSchemas } from '@graphql-tools/schema';
 import { calendarSchema } from './subgraphCalendar';
 import { peopleSchema } from './subgraphPeople';
-
+import axios from 'axios';
 
 config();
 
@@ -29,7 +28,7 @@ const oauth2Client = new google.auth.OAuth2(
 );
 
 // Middleware for validating access token
-async function validateAccessTokenMiddleware(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function validateAccessTokenMiddleware(req: Request, res: Response, next: any) {
   let accessToken = req.query.accessToken || '';
   const authorizationHeader = req.headers.authorization;
 
@@ -70,7 +69,7 @@ async function validateAccessTokenMiddleware(req: express.Request, res: express.
 // Apply middleware to the '/graphql' path
 app.use('/graphql', validateAccessTokenMiddleware);
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: [
@@ -83,7 +82,7 @@ app.get('/', (req, res) => {
   res.redirect(authUrl);
 });
 
-app.get('/oauth2callback', async (req, res) => {
+app.get('/oauth2callback', async (req: Request, res: Response) => {
   const code = req.query.code as string;
 
   try {

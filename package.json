@@ -21,6 +21,7 @@
   "dependencies": {
     "@apollo/gateway": "^0.50.0",
     "@apollo/subgraph": "^0.4.0",
+    "@graphql-tools/schema": "^10.0.2",
     "apollo-server": "^3.6.7",
     "apollo-server-express": "^3.13.0",
     "axios": "^1.6.7",

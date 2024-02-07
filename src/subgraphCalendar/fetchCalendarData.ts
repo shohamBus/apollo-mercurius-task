@@ -1,4 +1,4 @@
-//fetchCalendarData.ts
+//subgraphCalendar/fetchCalendarData.ts
 import axios from 'axios';
 
 interface Organizer {

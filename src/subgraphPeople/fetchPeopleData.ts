@@ -1,4 +1,4 @@
-//fetchCalendarData.ts
+//subgraphPeople/fetchPeopleData.ts
 
 import axios from 'axios';
 

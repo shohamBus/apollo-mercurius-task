@@ -1,4 +1,5 @@
-//index.ts
+//subgraphCalendar/index.ts
+
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { gql } from 'apollo-server-express';
 import { AuthenticationError } from 'apollo-server-express';
