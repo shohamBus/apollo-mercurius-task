@@ -27,7 +27,11 @@
     "axios": "^1.6.7",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+    "fastify": "^4.26.0",
     "googleapis": "^131.0.0",
+    "graphql-playground-html": "^1.6.30",
+    "mercurius": "^13.3.3",
+    "mercurius-auth": "^5.0.0",
     "node-fetch": "^2.6.0"
   }
 }

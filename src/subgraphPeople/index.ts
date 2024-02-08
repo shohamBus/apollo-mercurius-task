@@ -29,13 +29,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    people: [Person!]!
+    getContacts: [Person!]!
   }
 `;
 
 const resolvers = {
   Query: {
-    people: async (_parent: any, _args: any, context: { token: string }) => {
+    getContacts: async (_parent: any, _args: any, context: { token: string }) => {
       if (context.token) {
         try {
           const peopleData: Person[] = await fetchPeopleData(context.token);

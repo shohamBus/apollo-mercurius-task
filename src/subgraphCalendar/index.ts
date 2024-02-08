@@ -38,13 +38,13 @@ const typeDefs = gql`
   }
 
   type Query {
-    events: [Event!]!
+    getEvents: [Event!]!
   }
 `;
 
 const resolvers = {
   Query: {
-    events: async (_parent: any, _args: any, context: { token: string }) => {
+    getEvents: async (_parent: any, _args: any, context: { token: string }) => {
       if (context.token) {
         try {
           const calendarData: Event[] = await fetchCalendarData(context.token);
