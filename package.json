@@ -4,11 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:gateway": "ts-node src/index.ts",
-    "start:calendar": "ts-node src/subgraphCalendar/index.ts",
-    "start:people": "ts-node src/subgraphPeople/index.ts",
-    "start:all": "npm-run-all --parallel start:gateway start:calendar start:people",
-    "start": "npm run start:all"
+    "start": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
