@@ -27,9 +27,6 @@ export async function fetchPeopleData(accessToken: string): Promise<Person[]> {
     });
 
     const peopleData = response.data?.connections || [];
-
-    console.log('Raw people data:', peopleData);
-
     const formattedData: Person[] = peopleData.map((person) => ({
       resourceName: person.resourceName || '',
       etag: person.etag || '',
