@@ -52,19 +52,6 @@ end
 These are simplified representations of the flows. You might need to adjust them according to the specific implementation details and interactions in your project.
 
 
-
-
-Source Code Organization:
-
-1)Services: Separate folders for the backend services interacting with Google Calendar and Google People APIs.
-•	Each service folder should contain the source code for its functionality, including schema definitions, resolvers, and any helper functions.
-2)Gateway Setup: This would be your main Express application acting as a gateway for both services.
-•	index.ts or app.ts file for setting up the Express server.
-•	Configuration files (e.g., .env) for environment variables.
-•	Middleware folder (if any).
-3)Sequence Diagrams: Include sequence diagram files illustrating the authentication flow and API data fetching flows.
-Documentation:
-
 1)Setup Instructions:
 •	Environment setup (Node.js, npm/yarn installation).
 •	Installation steps for dependencies (npm install or yarn install).
@@ -95,15 +82,9 @@ Usage Examples (usage.md):
 ## Usage Examples
 
 ### Authenticating with Google
+1. create a .env file with the required fields.
+2. Open your browser and navigate to `http://localhost:3000`.
+3. You will be redirected to Google for authentication.
+4. Grant the required permissions.
+5. Upon successful authentication, you will be redirected back to the application.
 
-1. Open your browser and navigate to `http://localhost:3000`.
-2. You will be redirected to Google for authentication.
-3. Grant the required permissions.
-4. Upon successful authentication, you will be redirected back to the application.
-
-### Fetching Calendar Data
-
-```bash
-curl -X POST http://localhost:3000/graphql \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"{ events { id, summary, location, organizer { email, displayName } } }"}'
